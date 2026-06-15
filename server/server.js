@@ -32,6 +32,17 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema);
 
+import nodemailer from 'nodemailer';
+
+// Nodemailer Transporter Configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, // Your Gmail address
+    pass: process.env.EMAIL_PASS  // Your Gmail App Password
+  }
+});
+
 // API Routes
 app.post('/api/contact', async (req, res) => {
   try {
@@ -41,18 +52,45 @@ app.post('/api/contact', async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
+    // Prepare Email Options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: 'dipakthakur435@gmail.com',
+      subject: `New Portfolio Message: ${subject}`,
+      html: `
+        <h3>You have a new message from your portfolio website!</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    };
+
+    // Attempt to Send Email
+    try {
+      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully to dipakthakur435@gmail.com');
+      } else {
+        console.log('Nodemailer skipped: EMAIL_USER and EMAIL_PASS not set in .env');
+      }
+    } catch (mailError) {
+      console.error('Failed to send email:', mailError);
+    }
+
     // Attempt to save to MongoDB
     if (mongoose.connection.readyState === 1) {
       const newContact = new Contact({ name, email, subject, message });
       await newContact.save();
-      return res.status(201).json({ message: 'Message saved successfully to database!' });
+      return res.status(201).json({ message: 'Message sent and saved successfully!' });
     } else {
       // Fallback log to console/mock
       console.log('MongoDB not connected. Logged message:', { name, email, subject, message });
-      return res.status(201).json({ message: 'Message received (local storage fallback active)' });
+      return res.status(201).json({ message: 'Message received and email attempted (local storage fallback active)' });
     }
   } catch (error) {
-    console.error('Error saving message:', error);
+    console.error('Error handling contact form:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
