@@ -15,7 +15,7 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('/api/contact', form);
+      await axios.post('https://thakurdipak-portfolio.onrender.com/api/contact', form);
       setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch {
