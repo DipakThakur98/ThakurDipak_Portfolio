@@ -67,16 +67,13 @@ app.post('/api/contact', async (req, res) => {
       `
     };
 
-    // Attempt to Send Email
-    try {
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully to dipakthakur435@gmail.com');
-      } else {
-        console.log('Nodemailer skipped: EMAIL_USER and EMAIL_PASS not set in .env');
-      }
-    } catch (mailError) {
-      console.error('Failed to send email:', mailError);
+    // Attempt to Send Email (in background so it doesn't hang the request)
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      transporter.sendMail(mailOptions)
+        .then(() => console.log('Email sent successfully'))
+        .catch(mailError => console.error('Failed to send email:', mailError));
+    } else {
+      console.log('Nodemailer skipped: EMAIL_USER and EMAIL_PASS not set in .env');
     }
 
     // Attempt to save to MongoDB
