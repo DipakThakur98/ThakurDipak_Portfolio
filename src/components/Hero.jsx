@@ -83,16 +83,16 @@ export default function Hero() {
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:flex justify-center"
+            className="flex justify-center order-first lg:order-last mb-12 lg:mb-0"
           >
             <div className="relative">
               {/* Decorative rings */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-80 h-80 rounded-full border opacity-20 animate-pulse" style={{ borderColor: '#2563EB' }} />
-                <div className="absolute w-96 h-96 rounded-full border opacity-10" style={{ borderColor: '#60A5FA', animation: 'float 6s ease-in-out infinite' }} />
+                <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-full border opacity-20 animate-pulse" style={{ borderColor: '#2563EB' }} />
+                <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full border opacity-10" style={{ borderColor: '#60A5FA', animation: 'float 6s ease-in-out infinite' }} />
               </div>
               {/* Avatar Image */}
-              <div className="relative w-72 h-72 rounded-3xl glass flex items-center justify-center animate-float overflow-hidden" style={{ padding: '6px' }}>
+              <div className="relative w-56 h-56 sm:w-72 sm:h-72 rounded-3xl glass flex items-center justify-center animate-float overflow-hidden" style={{ padding: '6px' }}>
                 <img src="/profile.jpg" alt="Dipak Thakur" className="w-full h-full object-cover rounded-2xl" />
               </div>
               {/* Floating badges */}
